@@ -1,0 +1,12 @@
+[API_KEYS]
+owm_api_key = YOUR_OPENWEATHERMAP_API_KEY
+telegram_bot_token = YOUR_TELEGRAM_BOT_TOKEN
+channel_id = YOUR_TELEGRAM_CHANNEL_ID
+
+[SETTINGS]
+city = YOUR_CITY_NAME
+
+[WIFI]
+ssid = YOUR_WIFI_SSID
+password = YOUR_WIFI_PASSWORD
+
