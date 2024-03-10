@@ -1,8 +1,8 @@
 import configparser
 import requests
-import telegram
 import time
 import asyncio
+import json
 
 # Function to fetch weather forecast from OpenWeatherMap
 def get_weather_forecast(api_key, city):
@@ -16,9 +16,21 @@ def get_weather_forecast(api_key, city):
     else:
         return "Failed to fetch weather forecast"
 
+
 # Function to send message to Telegram channel
-async def send_message_to_telegram(bot, chat_id, message):
-    await bot.send_message(chat_id=chat_id, text=message)
+async def send_message_to_telegram(bot_token, chat_id, message):
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    payload = {
+        "chat_id": chat_id,
+        "text": message
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url, data=json.dumps(payload), headers=headers)
+    if response.status_code != 200:
+        print("Failed to send message to Telegram.")
+        print(response.text)
 
 # Main function
 async def main():
@@ -30,13 +42,12 @@ async def main():
     channel_id = config['API_KEYS']['channel_id']
     city = config['SETTINGS']['city']
     
+
     
-    tg_bot = telegram.Bot(token=telegram_bot_token)
-    
-    await send_message_to_telegram(tg_bot, channel_id, "Weather forecast bot started")
+    await send_message_to_telegram(telegram_bot_token, channel_id, "Weather forecast bot started")
     while True:
         weather_forecast = get_weather_forecast(owm_api_key, city)
-        await send_message_to_telegram(tg_bot, channel_id, weather_forecast)
+        await send_message_to_telegram(telegram_bot_token, channel_id, weather_forecast)
         await asyncio.sleep(3600)  # Fetch and send weather forecast every hour
 
 if __name__ == "__main__":
